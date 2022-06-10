@@ -1,8 +1,8 @@
 import { initialData } from 'actions/initialData';
 import Column from 'components/Column/Column';
 import { isEmpty } from 'lodash';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Col, Container as BootstrapContainer, Form, Row, Button } from 'react-bootstrap';
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, Col, Container as BootstrapContainer, Form, Row } from 'react-bootstrap';
 import { Container, Draggable } from 'react-smooth-dnd';
 import { applyDrag } from 'utilities/dragDrop';
 import { mapOrder } from 'utilities/sorts';
@@ -12,11 +12,12 @@ function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
+  const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
 
   const newColumnInputRef = useRef(null);
 
   const [newColumnTitle, setNewColumnTitle] = useState('');
-  const onNewColumnTitleChange = useCallback((e) => setNewColumnTitle(e.target.value), []);
+  const onNewColumnTitleChange = (e) => setNewColumnTitle(e.target.value);
 
   useEffect(() => {
     const boardFromDB = initialData.boards.find((board) => board.id === 'board-1');
@@ -68,8 +69,6 @@ function BoardContent() {
     }
   };
 
-  const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
-
   const addNewColumn = () => {
     if (!newColumnTitle) {
       newColumnInputRef.current.focus();
@@ -105,6 +104,7 @@ function BoardContent() {
     if (newColumnToUpdate._destroy) {
       newColumns.splice(columnIndexToUpdate, 1);
     } else {
+      console.log(newColumnToUpdate);
       newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate);
     }
 
@@ -114,7 +114,6 @@ function BoardContent() {
 
     setColumns(newColumns);
     setBoard(newBoard);
-    console.log(newColumnToUpdate);
   };
 
   return (
@@ -161,7 +160,7 @@ function BoardContent() {
               <Button variant="success" size="sm" onClick={addNewColumn}>
                 Add column
               </Button>
-              <span className="cancel-new-column" onClick={toggleOpenNewColumnForm}>
+              <span className="cancel-icon" onClick={toggleOpenNewColumnForm}>
                 <i className="fa fa-trash icon" />
               </span>
             </Col>
